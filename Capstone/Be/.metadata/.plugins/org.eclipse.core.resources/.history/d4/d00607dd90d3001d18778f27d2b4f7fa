@@ -1,0 +1,24 @@
+package it.epicode.lucal.App.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import it.epicode.lucal.App.entities.Ruolo;
+import it.epicode.lucal.App.entities.enums.TipoRuolo;
+
+
+
+
+@Configuration
+public class Beans {
+
+	
+	@Bean
+	@Scope("prototype")
+	public Ruolo ruolo(TipoRuolo tr) {
+		return Ruolo.builder()
+				.tipoRuolo(tr)
+				.build();
+	}
+	
+}

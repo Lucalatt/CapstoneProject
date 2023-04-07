@@ -1,0 +1,129 @@
+package it.epicode.lucal.App.services;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import it.epicode.lucal.App.entities.Chat;
+import it.epicode.lucal.App.entities.Messaggio;
+import it.epicode.lucal.App.exceptions.ChatNotFoundException;
+import it.epicode.lucal.App.exceptions.NoChatExistsInTheRepository;
+import it.epicode.lucal.App.repositories.ChatRepo;
+import it.epicode.lucal.App.repositories.MessageRepo;
+
+@Service
+public class ChatService {
+	
+	@Autowired
+	private ChatRepo cr;
+	
+	@Autowired
+	private MessageRepo mr;
+	
+	
+	
+	 public Chat addChat(Chat chat) {
+	        return cr.save(chat);
+	    }
+
+	   
+	    public Messaggio addMessage2(Messaggio messaggio) {
+	            return mr.save(messaggio);
+	    }
+
+	    public List<Messaggio> getAllMessagesInChat(int chatId) throws NoChatExistsInTheRepository {
+	        Optional<Chat> chat = cr.findById(chatId);
+
+	        if(chat.isEmpty()){
+	            throw new NoChatExistsInTheRepository();
+	        }else {
+	            return chat.get().getListaMessaggi();
+	        }
+	    }
+
+	    public List<Chat> findallchats() throws NoChatExistsInTheRepository {
+	        if (cr.findAll().isEmpty()) {
+	            throw new NoChatExistsInTheRepository();
+	        } else {
+	            return cr.findAll();
+	        }
+
+	    }
+
+	    public Chat getById(int id) throws ChatNotFoundException {
+	        Optional<Chat> chatid = cr.findById(id);
+	        if (chatid.isPresent()) {
+	            return chatid.get();
+	        } else {
+	            throw new ChatNotFoundException();
+	        }
+	    }
+
+	    public HashSet<Chat> getChatByFirstUserName(String username) throws ChatNotFoundException {
+	        HashSet<Chat> chat = cr.getChatByFirstUserName(username);
+
+	        if (chat.isEmpty()) {
+	            throw new ChatNotFoundException();
+	        } else {
+	            return chat;
+	        }
+	    }
+
+	    public HashSet<Chat> getChatBySecondUserName(String username) throws ChatNotFoundException {
+	        HashSet<Chat> chat = cr.getChatBySecondUserName(username);
+	        if (chat.isEmpty()) {
+	            throw new ChatNotFoundException();
+	        } else {
+	            return chat;
+	        }
+	    }
+
+	    public HashSet<Chat> getChatByFirstUserNameOrSecondUserName(String username) throws ChatNotFoundException {
+	        HashSet<Chat> chat = cr.getChatByFirstUserName(username);
+	        HashSet<Chat> chat1 = cr.getChatBySecondUserName(username);
+
+	        chat1.addAll(chat);
+
+	        if (chat.isEmpty() && chat1.isEmpty()) {
+	            throw new ChatNotFoundException();
+	        } else if (chat1.isEmpty()) {
+	            return chat;
+	        } else {
+	            return chat1;
+	        }
+	    }
+
+	    public HashSet<Chat> getChatByFirstUserNameAndSecondUserName(String firstUserName, String secondUserName) throws ChatNotFoundException {
+	        HashSet<Chat> chat = cr.getChatByFirstUserNameAndSecondUserName(firstUserName, secondUserName);
+	        HashSet<Chat> chat1 = cr.getChatBySecondUserNameAndFirstUserName(firstUserName, secondUserName);
+	        if (chat.isEmpty() && chat1.isEmpty()) {
+	            throw new ChatNotFoundException();
+	        } else if (chat.isEmpty()) {
+	            return chat1;
+	        } else {
+	            return chat;
+	        }
+	    }
+
+	    public Chat addMessage(Messaggio add, int chatId) throws ChatNotFoundException {
+	        Optional<Chat> chat=cr.findById(chatId);
+	        Chat abc=chat.get();
+
+	        if(abc.getListaMessaggi()==null){
+	            List<Messaggio> msg=new ArrayList<>();
+	            msg.add(add);
+	            abc.setListaMessaggi(msg);
+	            return cr.save(abc);
+	        }else{
+	            List<Messaggio> rates=abc.getListaMessaggi();
+	            rates.add(add);
+	            abc.setListaMessaggi(rates);
+	            return cr.save(abc);
+	        }
+	    }
+
+}

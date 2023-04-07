@@ -1,0 +1,4 @@
+package it.epicode.lucal.App.exceptions;
+
+public class ChatNotFoundException extends Throwable {
+}

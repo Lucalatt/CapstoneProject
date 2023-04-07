@@ -1,0 +1,29 @@
+package it.epicode.lucal.App.services;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import it.epicode.lucal.App.entities.Messaggio;
+import it.epicode.lucal.App.repositories.MessageRepo;
+
+@Service
+public class MessaggioService {
+	
+	@Autowired
+	private MessageRepo mr;
+	
+	public Messaggio save(Messaggio m) {
+		return mr.save(m);
+	}
+	
+	public List<Messaggio> getAll() {
+		return mr.findAll();
+	}
+	
+	public void delete(Messaggio m) {
+		mr.delete(m);
+	}
+
+}

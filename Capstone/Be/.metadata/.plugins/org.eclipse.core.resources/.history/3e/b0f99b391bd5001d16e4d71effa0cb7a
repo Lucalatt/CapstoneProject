@@ -1,0 +1,62 @@
+package it.epicode.lucal.App.services;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import it.epicode.lucal.App.entities.Chat;
+import it.epicode.lucal.App.entities.Messaggio;
+import it.epicode.lucal.App.repositories.ChatRepo;
+import it.epicode.lucal.App.repositories.MessageRepo;
+
+@Service
+public class ChatService {
+	
+	@Autowired
+	private ChatRepo cr;
+	
+	@Autowired
+	private MessageRepo mr;
+	
+	
+	
+	public Chat createChat(Chat c) {
+		return cr.save(c);
+	}
+	
+	public List<Messaggio> getMessagesByChatId(int chatId) {
+        Optional<Chat> optionalChat = cr.findById(chatId);
+        if (optionalChat.isPresent()) {
+            return optionalChat.get().getMessageList();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+	
+	public Messaggio addMessageToChat(int chatId, Messaggio message) {
+        Optional<Chat> chatOptional = cr.findById(chatId);
+        if (!chatOptional.isPresent()) {
+            throw new IllegalArgumentException("Chat not found with id: " + chatId);
+        }
+        
+        Chat chat = chatOptional.get();
+        message.setChat(chat);
+        return mr.save(message);
+    }
+	
+	public Optional<Chat> getById(int id) {
+		return cr.findById(id);
+	}
+	
+	public List<Chat> getAll() {
+		return cr.findAll();
+	}
+	
+	public void deleteById(int id) {
+		cr.deleteById(id);
+	}
+
+}

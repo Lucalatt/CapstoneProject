@@ -1,0 +1,23 @@
+package it.epicode.lucal.App.repositories;
+
+
+
+import java.util.HashSet;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import it.epicode.lucal.App.entities.Chat;
+
+@Repository
+public interface ChatRepo extends JpaRepository<Chat, Integer>{
+	
+	 HashSet<Chat> getChatByFirstUserName(String username);
+
+	    HashSet<Chat> getChatBySecondUserName(String username);
+
+	    HashSet<Chat> getChatByFirstUserNameAndSecondUserName(String firstUserName, String secondUserName);
+
+	    HashSet<Chat> getChatBySecondUserNameAndFirstUserName(String firstUserName, String secondUserName);
+    
+}
